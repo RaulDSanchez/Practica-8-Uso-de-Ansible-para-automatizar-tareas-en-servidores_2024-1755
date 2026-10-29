@@ -1,0 +1,40 @@
+---
+- name: Configuración de servidores Ubuntu
+  hosts: servidores
+  become: true
+
+  tasks:
+    - name: Actualizar índice de APT y paquetes del sistema
+      apt:
+        update_cache: true
+        upgrade: dist
+
+    - name: Crear el usuario itla
+      user:
+        name: itla
+        shell: /bin/bash
+        create_home: true
+        state: present
+
+    - name: Crear la carpeta app
+      file:
+        path: /home/itla/app
+        state: directory
+        owner: itla
+        group: itla
+        mode: "0755"
+
+    - name: Crear el archivo hola.txt
+      file:
+        path: /home/itla/app/hola.txt
+        state: touch
+        owner: itla
+        group: itla
+        mode: "0644"
+
+    - name: Instalar cowsay y htop
+      apt:
+        name:
+          - cowsay
+          - htop
+        state: present
